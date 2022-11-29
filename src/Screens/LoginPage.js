@@ -30,11 +30,11 @@ const LoginPage = () => {
                 throw new Error('Incorrect Credentials');
             }
             const responseData = await response.json();
-            console.log(responseData);
+            dispatch(authActions.logInUser());
+            dispatch(authActions.saveCredentials(responseData.accessToken));
+            dispatch(authActions.savePassword(password.current.value));
         }
-        requestLogin().then((data) => {
-            dispatch(authActions.logInUser(data))
-        });
+        requestLogin();
     }
 
     return (
