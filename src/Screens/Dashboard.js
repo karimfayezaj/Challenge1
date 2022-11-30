@@ -7,10 +7,6 @@ const Dashboard = () => {
 
 
     const token = useSelector(state => state.auth.token);
-
-
-
-
     const searchArticles = useRef("");
 
     const urlFetch = "http://34.245.213.76:3000/articles?page=0";
