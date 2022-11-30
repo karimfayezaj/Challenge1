@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import ArticleCard from "../Components/ArticleCard";
+import classes from './Dashboard.module.css';
 
 const Dashboard = () => {
 
@@ -26,12 +27,17 @@ const Dashboard = () => {
 
 
     return (<div>
-        <label>Welcome {token}</label>
-        <input ref={searchArticles} />
         <div>
-            <button onClick={fetchArticles}>Search Articles</button>
+            <input ref={searchArticles} />
+            <div>
+                <button onClick={fetchArticles}>Search Articles</button>
+            </div>
         </div>
-        <div>
+
+        <div onClick={() => {
+            // get articles web_url
+            console.log("Card clicked")
+        }}>
             {articles.map((element, index) => { return <ArticleCard>{element}</ArticleCard> })}
         </div>
 

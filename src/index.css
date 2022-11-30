@@ -10,11 +10,11 @@ html {
 
 body {
     margin: 0;
-    background-color: #3f3f3f;
 }
 
 button {
     font: inherit;
+    font-size: 1.25rem;
     cursor: pointer;
     padding: 0.5rem 1.5rem;
     border-radius: 6px;
@@ -28,4 +28,11 @@ button:active {
     background-color: #1ac5d1;
     border-color: #1ac5d1;
     color: white;
+}
+
+
+button:disabled {
+    background-color: white;
+    border-color: red;
+    color: red;
 }

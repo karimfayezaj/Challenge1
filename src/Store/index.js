@@ -2,7 +2,7 @@
 
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 
-const authInitialState = { isAuth: false, token: "", password: "", errorMessage: "" };
+const authInitialState = { isAuth: false, token: "", password: "", username: "", errorMessage: "" };
 const articlesInitialState = { numberOfArticles: 0, listArticles: [] };
 
 const authSlice = createSlice({

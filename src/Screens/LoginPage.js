@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../Store/index";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import classes from './LoginPage.module.css';
 
 
 const LoginPage = () => {
@@ -9,9 +10,21 @@ const LoginPage = () => {
     const userName = useRef("");
     const password = useRef("");
 
-    const SubmitForm = (event) => {
+    const [buttonDesign, setButtonDesign] = useState(classes.buttondisabled);
+    const [buttonEnabled, setButtonEnabled] = useState(true);
+
+
+
+    useEffect(() => {
         console.log(userName.current.value);
-        console.log(password.current.value);
+    }, [userName.current.value, password.current.value])
+
+
+
+
+    const SubmitForm = (event) => {
+        setButtonDesign(classes.buttonddisabled);
+        setButtonEnabled(true);
         event.preventDefault();
         const credentials = {
             "username": userName.current.value,
@@ -25,7 +38,9 @@ const LoginPage = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            });
+            }).then(() => {
+                onChangeValue();
+            })
             if (!response.ok) {
                 throw new Error('Incorrect Credentials');
             }
@@ -37,25 +52,49 @@ const LoginPage = () => {
         requestLogin();
     }
 
-    return (
-        <form onSubmit={SubmitForm}>
-            <div>
-                <div>
-                    <input
-                        type='name'
-                        ref={userName}
-                    />
-                </div>
-                <div>
-                    <input
-                        type='password'
-                        ref={password}
 
-                    />
-                </div>
+    const onChangeValue = () => {
+        if (userName.current.value !== "" && password.current.value !== "") {
+            setButtonDesign(classes.buttondenabled);
+            setButtonEnabled(false);
+        }
+        else {
+            setButtonDesign(classes.buttonddisabled);
+            setButtonEnabled(true);
+        }
+    }
+
+    return (
+        <div>
+            <div className={classes.logincard}>
+                <form onSubmit={SubmitForm}>
+                    <div>
+                        <div>
+                            <label className={classes.loginlabel}>Username</label>
+                            <input
+                                type='name'
+                                ref={userName}
+                                className={classes.logininput}
+                                onChange={onChangeValue}
+                            />
+                        </div>
+                        <div>
+                            <label className={classes.loginlabel}>Password</label>
+                            <input
+                                type='password'
+                                ref={password}
+                                className={classes.logininput}
+                                onChange={onChangeValue}
+                            />
+                        </div>
+                    </div>
+                    {<button type="submit" className={buttonDesign} disabled={buttonEnabled}>Login</button>}
+                </form >
             </div>
-            {<button type="submit" >Login</button>}
-        </form >
+            <div className={classes.logincard}>
+                <p>Message Board</p>
+            </div>
+        </div>
     );
 };
 
