@@ -1,68 +1,69 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { authActions } from "../Store/index";
-import { useRef, useEffect, useState } from "react";
-import classes from './LoginPage.module.css';
-
+import { useRef, useState } from "react";
+import classes from "./LoginPage.module.css";
 
 const LoginPage = () => {
     const dispatch = useDispatch();
 
-    const userName = useRef("");
-    const password = useRef("");
+    let userName = useRef("");
+    let password = useRef("");
 
     const [buttonDesign, setButtonDesign] = useState(classes.buttondisabled);
     const [buttonEnabled, setButtonEnabled] = useState(true);
-
-
-
-    useEffect(() => {
-        console.log(userName.current.value);
-    }, [userName.current.value, password.current.value])
-
-
-
+    const [messageBoard, setMessageBoard] = useState("Message Board");
 
     const SubmitForm = (event) => {
         setButtonDesign(classes.buttonddisabled);
         setButtonEnabled(true);
+        loadingIndicator();
         event.preventDefault();
         const credentials = {
-            "username": userName.current.value,
-            "password": password.current.value,
-        }
+            username: userName.current.value,
+            password: password.current.value,
+        };
         const requestLogin = async () => {
-
             const response = await fetch("http://34.245.213.76:3000/auth/signin", {
                 method: "POST",
                 body: JSON.stringify(credentials),
                 headers: {
-                    'Content-Type': 'application/json',
-                }
-            }).then(() => {
-                onChangeValue();
-            })
+                    "Content-Type": "application/json",
+                },
+            });
             if (!response.ok) {
-                throw new Error('Incorrect Credentials');
+                setMessageBoard("Incorrect Credentials");
+                userName.current.value = "";
+                password.current.value = "";
+                throw new Error("Invalid Request");
+            } else {
+                setMessageBoard("Login Successful");
+                const responseData = await response.json();
+                dispatch(authActions.logInUser());
+                dispatch(authActions.saveCredentials(responseData.accessToken));
             }
-            const responseData = await response.json();
-            dispatch(authActions.logInUser());
-            dispatch(authActions.saveCredentials(responseData.accessToken));
-            dispatch(authActions.savePassword(password.current.value));
+        };
+        try {
+            requestLogin();
         }
-        requestLogin();
-    }
+        catch (error) {
+            console.error(error);
+        }
 
+    };
 
     const onChangeValue = () => {
         if (userName.current.value !== "" && password.current.value !== "") {
             setButtonDesign(classes.buttondenabled);
             setButtonEnabled(false);
-        }
-        else {
+        } else {
             setButtonDesign(classes.buttonddisabled);
             setButtonEnabled(true);
         }
-    }
+    };
+
+    const loadingIndicator = () => {
+        setMessageBoard("Loading in Progress");
+    };
 
     return (
         <div>
@@ -88,18 +89,22 @@ const LoginPage = () => {
                             />
                         </div>
                     </div>
-                    {<button type="submit" className={buttonDesign} disabled={buttonEnabled}>Login</button>}
-                </form >
+                    {
+                        <button
+                            type='submit'
+                            className={buttonDesign}
+                            disabled={buttonEnabled}
+                        >
+                            Login
+                        </button>
+                    }
+                </form>
             </div>
             <div className={classes.logincard}>
-                <p>Message Board</p>
+                <p>{messageBoard}</p>
             </div>
         </div>
     );
 };
 
 export default LoginPage;
-
-
-
-

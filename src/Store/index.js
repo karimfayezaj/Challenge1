@@ -15,15 +15,11 @@ const authSlice = createSlice({
         saveCredentials(state, action) {
             state.token = action.payload;
         },
-        savePassword(state, action) {
-            state.password = action.payload;
-        },
+
         logOutUser(state) {
             state.isAuth = false;
         },
-        loginFailed(state, action) {
-            state.errorMessage = action.payload;
-        }
+
     }
 })
 
