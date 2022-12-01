@@ -1,4 +1,3 @@
-import { render } from "@testing-library/react";
 import { useRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ArticleCard from "../Components/ArticleCard";
@@ -41,34 +40,37 @@ const Dashboard = () => {
         fetchArticles();
     }, [token, dispatch, urlFetch]);
 
-    const filterList = () => {
-        articles.forEach((element) => {
-            if (element.abstract.includes(searchArticles.current.value)) {
-                dispatch(articlesAction.filterArticles(element));
-            }
-        });
+    const filterList = (event) => {
+        event.preventDefault();
+        dispatch(articlesAction.filterArticles(searchArticles.current.value));
+        console.log(filtered);
     };
 
     const renderArticles = () => {
-        if (searchArticles.current.value !== "") {
-            return filtered.map((element, index) => {
+        return articles.map((element, index) => {
+            if (element.headline.main.includes(filtered)) {
                 return <ArticleCard key={element._id}>{element}</ArticleCard>;
-            });
-        } else {
-            return articles.map((element, index) => {
-                return <ArticleCard key={element._id}>{element}</ArticleCard>;
-            });
-        }
+            }
+            else {
+                return <p></p>
+            }
+
+        });
     };
 
     return (
         <div>
-            <form onSubmit={() => { }}>
+            <form onSubmit={filterList}>
                 <div className={classes.dashboardcard}>
                     <label className={classes.dashboardlabel}>Search for: </label>
                     <input className={classes.dashboardinput} ref={searchArticles} />
                     <div>
-                        <button type="submit">Search Articles</button>
+                        <button
+                            disbaled={searchArticles.current.length === 0 ? false : true}
+                            type='submit'
+                        >
+                            Search Articles
+                        </button>
                     </div>
                 </div>
             </form>
@@ -83,7 +85,7 @@ const Dashboard = () => {
                         dispatch(articlesAction.changePageNumber(1));
                     }}
                 >
-                    {pageNumber >= 2 ? <p>No more Data</p> : <p>Load more data... </p>}
+                    {pageNumber > 2 ? <p>No more Data</p> : <p>Load more data... </p>}
                 </button>
             </div>
         </div>

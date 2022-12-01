@@ -3,7 +3,7 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 
 const authInitialState = { isAuth: false, token: "", password: "", username: "", errorMessage: "" };
-const articlesInitialState = { numberOfArticles: 0, listArticles: [], listFiltered: [], pageNumber: 0 };
+const articlesInitialState = { numberOfArticles: 0, listArticles: [], listFiltered: "", pageNumber: 0 };
 
 const authSlice = createSlice({
     name: 'authenticated',
@@ -30,10 +30,21 @@ const articleSlice = createSlice({
             state.listArticles = state.listArticles.concat(action.payload);
         },
         changePageNumber(state, action) {
-            state.pageNumber = state.pageNumber + action.payload;
+            if (state.pageNumber === 0) {
+                state.pageNumber = 1;
+            }
+            else if (state.pageNumber === 1) {
+                state.pageNumber = 2;
+            }
+            else {
+                state.pageNumber = 2;
+            }
         },
         filterArticles(state, action) {
-            state.listFiltered = state.listFiltered.concact(action.payload);
+            state.listFiltered = action.payload;
+        },
+        emptyFiltered(state) {
+            state.listFiltered = [];
         }
     }
 })
